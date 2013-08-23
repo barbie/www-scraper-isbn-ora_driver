@@ -1,5 +1,9 @@
 Revision history for Perl extension WWW::Scraper::ISBN::ORA_Driver.
 
+0.18    29/10/2010
+        - added further skip test if test books are withdrawn from the site.
+        - fixed skip test count.
+
 0.17    07/10/2010
         - amended pingtest() in network tests.
 

@@ -1,6 +1,6 @@
 {
     "name": "WWW-Scraper-ISBN-ORA_Driver",
-    "version": "0.17",
+    "version": "0.18",
     "abstract": "Search driver for the ORA online book catalog.",
     "author": ["Barbie <barbie@cpan.org>"],
 
@@ -43,7 +43,7 @@
     "provides": {
         "WWW::Scraper::ISBN::ORA_Driver": {
             "file": "lib/WWW/Scraper/ISBN/ORA_Driver.pm",
-            "version": "0.17"
+            "version": "0.18"
         }
     },
     "no_index": {
