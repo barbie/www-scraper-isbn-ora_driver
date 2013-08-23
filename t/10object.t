@@ -2,51 +2,74 @@
 use strict;
 
 use lib './t';
-use Test::More tests => 19;
+use Test::More tests => 20;
 use WWW::Scraper::ISBN;
 
 ###########################################################
 
-my $CHECK_DOMAIN = 'www.google.com';
+my $DRIVER          = 'ORA';
+my $CHECK_DOMAIN    = 'www.google.com';
+
+my %tests = (
+    '9780596001735' => [
+        [ 'is',     'isbn',         '9780596001735'     ],
+        [ 'is',     'isbn10',       '0596001738'        ],
+        [ 'is',     'isbn13',       '9780596001735'     ],
+        [ 'is',     'ean13',        '9780596001735'     ],
+        [ 'is',     'title',        'Perl Best Practices'            ],
+        [ 'is',     'author',       'Damian Conway'   ],
+        [ 'is',     'publisher',    q!O'Reilly Media!    ],
+        [ 'like',     'pubdate',      qr/Jul. \d{2}, 2005/ ],
+        [ 'is',     'binding',      undef         ],
+        [ 'is',     'pages',        '544'               ],
+        [ 'is',     'width',        undef               ],
+        [ 'is',     'height',       undef               ],
+        [ 'is',     'weight',       undef               ],
+        [ 'is',     'image_link',   'http://covers.oreilly.com/images/9780596001735/sm.gif' ],
+        [ 'is',     'thumb_link',   'http://covers.oreilly.com/images/9780596001735/sm.gif' ],
+        [ 'like',   'description',  qr|Perl Best Practices offers a collection of 256 guidelines| ],
+        [ 'like',   'book_link',    qr|http://oreilly.com/catalog/9780596001735/| ]
+    ],
+);
+
+my $tests = 0;
+for my $isbn (keys %tests) { $tests += scalar( @{ $tests{$isbn} } ) }
+
+
+###########################################################
 
 my $scraper = WWW::Scraper::ISBN->new();
 isa_ok($scraper,'WWW::Scraper::ISBN');
 
 SKIP: {
-	skip "Can't see a network connection", 18   if(pingtest($CHECK_DOMAIN));
+	skip "Can't see a network connection", $tests+1   if(pingtest($CHECK_DOMAIN));
 
-	$scraper->drivers("ORA");
+	$scraper->drivers($DRIVER);
 
-	my $isbn   = "9780596001735";
-	my $record = $scraper->search($isbn);
-    my $error  = $record->error || '';
+    for my $isbn (keys %tests) {
+        my $record = $scraper->search($isbn);
+        my $error  = $record->error || '';
 
-    SKIP: {
-        skip "Website unavailable", 18   if($error =~ /website appears to be unavailable/);
+        SKIP: {
+            skip "Website unavailable", scalar(@{ $tests{$isbn} }) + 2   
+                if($error =~ /website appears to be unavailable/);
 
-        unless($record->found) {
-            diag($record->error);
-        } else {
+            unless($record->found) {
+                diag($record->error);
+            }
+
             is($record->found,1);
-            is($record->found_in,'ORA');
+            is($record->found_in,$DRIVER);
 
             my $book = $record->book;
-            is($book->{'isbn'},         $isbn                   ,'.. isbn found');
-            is($book->{'isbn10'},       '0596001738'            ,'.. isbn10 found');    # not provided by default
-            is($book->{'isbn13'},       '9780596001735'         ,'.. isbn13 found');
-            is($book->{'ean13'},        '9780596001735'         ,'.. ean13 found');
-            is($book->{'title'},        'Perl Best Practices'   ,'.. title found');
-            is($book->{'author'},       'Damian Conway'         ,'.. author found');
-            is($book->{'publisher'},    q!O'Reilly Media!       ,'.. publisher found');
-            like($book->{'pubdate'},    qr/Jul. \d{2}, 2005/    ,'.. pubdate found');
-            like($book->{'description'},qr/^Perl Best Practices offers a collection of 256 guidelines/);
-            is($book->{'book_link'},    'http://oreilly.com/catalog/9780596001735/');
-            is($book->{'image_link'},   'http://covers.oreilly.com/images/9780596001735/sm.gif');
-            is($book->{'binding'},      undef                   ,'.. binding found');
-            is($book->{'pages'},        544                     ,'.. pages found');
-            is($book->{'width'},        undef                   ,'.. width found');
-            is($book->{'height'},       undef                   ,'.. height found');
-            is($book->{'weight'},       undef                   ,'.. weight found');
+            for my $test (@{ $tests{$isbn} }) {
+                if($test->[0] eq 'ok')          { ok(       $book->{$test->[1]},             ".. '$test->[1]' found [$isbn]"); } 
+                elsif($test->[0] eq 'is')       { is(       $book->{$test->[1]}, $test->[2], ".. '$test->[1]' found [$isbn]"); } 
+                elsif($test->[0] eq 'isnt')     { isnt(     $book->{$test->[1]}, $test->[2], ".. '$test->[1]' found [$isbn]"); } 
+                elsif($test->[0] eq 'like')     { like(     $book->{$test->[1]}, $test->[2], ".. '$test->[1]' found [$isbn]"); } 
+                elsif($test->[0] eq 'unlike')   { unlike(   $book->{$test->[1]}, $test->[2], ".. '$test->[1]' found [$isbn]"); }
+
+            }
 
             #use Data::Dumper;
             #diag("book=[".Dumper($book)."]");

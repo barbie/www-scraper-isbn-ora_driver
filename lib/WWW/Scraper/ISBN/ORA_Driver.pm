@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use vars qw($VERSION @ISA);
-$VERSION = '0.14';
+$VERSION = '0.15';
 
 #--------------------------------------------------------------------------
 
@@ -67,6 +67,7 @@ a valid page is returned, the following fields are returned via the book hash:
   title
   book_link
   image_link
+  thumb_link
   description
   pubdate
   publisher
@@ -142,6 +143,7 @@ sub search {
 		'title'			=> $data->{book_title},
 		'book_link'		=> $mech->uri(),
 		'image_link'	=> ($data->{graphic} !~ /^http/ ? ORA : '') . $data->{graphic},
+		'thumb_link'	=> ($data->{graphic} !~ /^http/ ? ORA : '') . $data->{graphic},
 		'description'	=> $data->{description},
 		'pubdate'		=> $data->{date},
 		'publisher'		=> q!O'Reilly Media!,
