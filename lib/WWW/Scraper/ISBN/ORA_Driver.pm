@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use vars qw($VERSION @ISA);
-$VERSION = '0.15';
+$VERSION = '0.16';
 
 #--------------------------------------------------------------------------
 
@@ -52,8 +52,8 @@ use constant	QUERY	=> '?submit.x=17&submit.y=8&q=%s';
 
 =item C<search()>
 
-Creates a query string, then passes the appropriate form fields to the ORM
-server.
+Creates a query string, then passes the appropriate form fields to the 
+O'Reilly Media server.
 
 The returned page should be the correct catalog page for that ISBN. If not the
 function returns zero and allows the next driver in the chain to have a go. If
