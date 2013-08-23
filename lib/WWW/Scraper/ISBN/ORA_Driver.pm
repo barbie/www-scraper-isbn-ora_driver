@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use vars qw($VERSION @ISA);
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 #--------------------------------------------------------------------------
 
@@ -23,7 +23,8 @@ Searches for book information from the O'Reilly & Associates's online catalog.
 =cut
 
 ### CHANGES ###############################################################
-#   0.01   07/04/2004   Initial Release
+#   0.01	07/04/2004	Initial Release
+#	0.02	19/04/2004	Test::More added as a prerequisites for PPMs
 ###########################################################################
 
 #--------------------------------------------------------------------------
@@ -41,7 +42,7 @@ use Template::Extract;
 ###########################################################################
 
 use constant	ORA		=> 'http://www.oreilly.com';
-use constant	SEARCH	=> 'http://catsearch.atomz.com/search/catsearch/';
+use constant	SEARCH	=> 'http://catsearch.atomz.com/search/catsearch';
 use constant	QUERY	=> '?sp-a=sp1000a5a9&sp-f=ISO-8859-1&sp-t=cat_search&sp-q=%s';
 
 #--------------------------------------------------------------------------
