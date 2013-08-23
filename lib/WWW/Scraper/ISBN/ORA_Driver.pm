@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use vars qw($VERSION @ISA);
-$VERSION = '0.08';
+$VERSION = '0.09';
 
 #--------------------------------------------------------------------------
 
@@ -37,8 +37,8 @@ use Template::Extract;
 ###########################################################################
 
 use constant	ORA		=> 'http://www.oreilly.com';
-use constant	SEARCH	=> 'http://catsearch.atomz.com/search/catsearch';
-use constant	QUERY	=> '?sp-a=sp1000a5a9&sp-f=ISO-8859-1&sp-t=cat_search&sp-q=%s';
+use constant	SEARCH	=> 'http://search.oreilly.com';
+use constant	QUERY	=> '?submit.x=17&submit.y=8&q=%s';
 
 #--------------------------------------------------------------------------
 
@@ -58,7 +58,7 @@ use constant	QUERY	=> '?sp-a=sp1000a5a9&sp-f=ISO-8859-1&sp-t=cat_search&sp-q=%s'
 
 =item C<search()>
 
-Creates a query string, then passes the appropriate form fields to the ORM 
+Creates a query string, then passes the appropriate form fields to the ORM
 server.
 
 The returned page should be the correct catalog page for that ISBN. If not the
@@ -74,7 +74,7 @@ a valid page is returned, the following fields are returned via the book hash:
   pubdate
   publisher
 
-The book_link and image_link refer back to the O'Reilly US website. 
+The book_link and image_link refer back to the O'Reilly US website.
 
 =back
 
@@ -94,19 +94,25 @@ sub search {
 
 	# The Search Results page
 	my $template = <<END;
-<!-- BOOK COLLECTION -->[% ... %]<a href="[% book %]" target="_self">[% ... %]
+<div class="book_text">[% ... %]
+<p class="title">[% ... %]
+<a href="[% book %]"[% ... %]
 END
-		   
+
 	my $extract = Template::Extract->new;
     my $data = $extract->extract($template, $mechanize->content());
 
-	return $self->handler("Could not extract data from the O'Reilly Media result page.")
-		unless(defined $data);
+	unless(defined $data) {
+        print STDERR "\n#url=$url\n";
+        print STDERR "\n#content=".$mechanize->content();
+	    return $self->handler("Could not extract data from the O'Reilly Media search page.");
+    }
 
 	my $book = $data->{book};
-	
+
 	# The Book page
 	$template = <<END;
+<meta name="book.isbn" content="[% isbnx %]" />[% ... %]
 <meta name="target" content="[% target %]" />[% ... %]
 <meta name="reference" content="[% reference %]" />[% ... %]
 <meta name="isbn" content="[% isbn %]" />[% ... %]
@@ -121,11 +127,16 @@ END
 	$mechanize->get( $book );
     $data = $extract->extract($template, $mechanize->content());
 
-	return $self->handler("Could not extract data from the O'Reilly Media result page.")
-		unless(defined $data);
+	unless(defined $data) {
+        print STDERR "\n#url=$url\n";
+        print STDERR "\n#content=".$mechanize->content();
+	    return $self->handler("Could not extract data from the O'Reilly Media result page.");
+    }
 
 	my $bk = {
 		'isbn'			=> $data->{isbn},
+		'isbn10'		=> $data->{isbn},
+		'isbn13'		=> $data->{isbnx},
 		'author'		=> $data->{author},
 		'title'			=> $data->{title},
 		'book_link'		=> $mechanize->uri(),
@@ -164,13 +175,12 @@ L<WWW::Scraper::ISBN::Driver>
 =head1 COPYRIGHT & LICENSE
 
   Copyright (C) 2004-2007 Barbie for Miss Barbell Productions
-  All Rights Reserved.
 
-  This module is free software; you can redistribute it and/or 
+  This module is free software; you can redistribute it and/or
   modify it under the same terms as Perl itself.
 
-The full text of the licenses can be found in the F<Artistic> file included 
-with this module, or in L<perlartistic> as part of Perl installation, in 
+The full text of the licenses can be found in the F<Artistic> file included
+with this module, or in L<perlartistic> as part of Perl installation, in
 the 5.8.1 release or later.
 
 =cut

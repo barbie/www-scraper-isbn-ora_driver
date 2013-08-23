@@ -2,7 +2,7 @@
 use strict;
 
 use lib './t';
-use Test::More tests => 11;
+use Test::More tests => 12;
 
 ###########################################################
 
@@ -11,8 +11,9 @@ use Test::More tests => 11;
 	isa_ok($scraper,'WWW::Scraper::ISBN');
 
 	$scraper->drivers("ORA");
-	my $isbn = "1565926285";
+	my $isbn = "9780596001735";
 	my $record = $scraper->search($isbn);
+    diag($record->error)    unless($record->found);
 
 	SKIP: {
 		skip($record->error . "\n",10)	unless($record->found);
@@ -21,13 +22,14 @@ use Test::More tests => 11;
 		is($record->found_in,'ORA');
 
 		my $book = $record->book;
-		is($book->{'isbn'},'1565926285');
-		like($book->{'title'},qr/qmail/);
-		is($book->{'author'},'John Levine');
-		is($book->{'book_link'},'http://www.oreilly.com/catalog/qmail/index.html');
-		is($book->{'image_link'},'http://www.oreilly.com/catalog/covers/1565926285_sm.gif');
-		is($book->{'description'},'qmail concentrates on common tasks like moving a sendmail setup to qmail, or setting up a POP toaster, a system that provides mail service to a large number of users on other computers sending and retrieving mail remotely. The book fills crucial gaps...');
-		like($book->{'pubdate'},qr/Mar. \d{2}, 2004/);
+		is($book->{'isbn'},'0596001738');
+		is($book->{'isbn13'},'9780596001735');
+		is($book->{'title'},'Perl Best Practices');
+		is($book->{'author'},'Damian Conway');
+		is($book->{'book_link'},'http://oreilly.com/catalog/9780596001735/index.html');
+		is($book->{'image_link'},'http://www.oreilly.com/catalog/covers/0596001738_sm.gif');
+		like($book->{'description'},qr/^Perl Best Practices offers a collection of 256 guidelines/);
+		like($book->{'pubdate'},qr/Jul. \d{2}, 2005/);
 		is($book->{'publisher'},q!O'Reilly Media!);
 	}
 

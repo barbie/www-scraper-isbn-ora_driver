@@ -1,5 +1,12 @@
 Revision history for Perl extension WWW::Scraper::ISBN::ORA_Driver.
 
+0.09	27/06/2008
+	- added checks to only run extra test under AUTOMATED_TESTING
+	- switched metatest to use Test-CPAN-Meta
+	- upped META.ym spec version and link
+	- fixed search and results pages content extraction
+	- added isbn10 and isbn13 as keys for book data
+
 0.08	01/03/2007
 	- Handwritten META.yml to conform to current specs.
 	- Changed all instances of LICENCE to LICENSE.
