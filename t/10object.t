@@ -12,23 +12,23 @@ my $CHECK_DOMAIN    = 'www.google.com';
 
 my %tests = (
     '9780596001735' => [
-        [ 'is',     'isbn',         '9780596001735'     ],
-        [ 'is',     'isbn10',       '0596001738'        ],
-        [ 'is',     'isbn13',       '9780596001735'     ],
-        [ 'is',     'ean13',        '9780596001735'     ],
-        [ 'is',     'title',        'Perl Best Practices'            ],
-        [ 'is',     'author',       'Damian Conway'   ],
-        [ 'is',     'publisher',    q!O'Reilly Media!    ],
-        [ 'like',     'pubdate',      qr/Jul. \d{2}, 2005/ ],
-        [ 'is',     'binding',      undef         ],
-        [ 'is',     'pages',        '544'               ],
-        [ 'is',     'width',        undef               ],
-        [ 'is',     'height',       undef               ],
-        [ 'is',     'weight',       undef               ],
-        [ 'is',     'image_link',   'http://covers.oreilly.com/images/9780596001735/sm.gif' ],
-        [ 'is',     'thumb_link',   'http://covers.oreilly.com/images/9780596001735/sm.gif' ],
+        [ 'is',     'isbn',         '9780596001735'         ],
+        [ 'is',     'isbn10',       '0596001738'            ],
+        [ 'is',     'isbn13',       '9780596001735'         ],
+        [ 'is',     'ean13',        '9780596001735'         ],
+        [ 'is',     'title',        'Perl Best Practices'   ],
+        [ 'is',     'author',       'Damian Conway'         ],
+        [ 'is',     'publisher',    q!O'Reilly Media!       ],
+        [ 'like',   'pubdate',      qr/Jul. \d{2}, 2005/    ],
+        [ 'is',     'binding',      undef                   ],
+        [ 'is',     'pages',        '544'                   ],
+        [ 'is',     'width',        undef                   ],
+        [ 'is',     'height',       undef                   ],
+        [ 'is',     'weight',       undef                   ],
+        [ 'like',   'image_link',   qr|http://\w+.oreilly.com/images/9780596001735/sm.gif| ],
+        [ 'like',   'thumb_link',   qr|http://\w+.oreilly.com/images/9780596001735/sm.gif| ],
         [ 'like',   'description',  qr|Perl Best Practices offers a collection of 256 guidelines| ],
-        [ 'like',   'book_link',    qr|http://oreilly.com/catalog/9780596001735/| ]
+        [ 'like',   'book_link',    qr|http://shop.oreilly.com/product/\d+\.do| ]
     ],
 );
 
@@ -64,6 +64,7 @@ SKIP: {
             is($record->found_in,$DRIVER);
 
             my $book = $record->book;
+            diag("book=[".$book->{book_link}."]");
             for my $test (@{ $tests{$isbn} }) {
                 if($test->[0] eq 'ok')          { ok(       $book->{$test->[1]},             ".. '$test->[1]' found [$isbn]"); } 
                 elsif($test->[0] eq 'is')       { is(       $book->{$test->[1]}, $test->[2], ".. '$test->[1]' found [$isbn]"); } 

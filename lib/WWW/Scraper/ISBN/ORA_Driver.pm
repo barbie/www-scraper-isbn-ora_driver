@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use vars qw($VERSION @ISA);
-$VERSION = '0.18';
+$VERSION = '0.19';
 
 #--------------------------------------------------------------------------
 
@@ -115,15 +115,22 @@ sub search {
     my $data = {};
 
     for my $name ('book.isbn','ean','target','reference','isbn','graphic','graphic_medium','graphic_large','book_title','author','keywords','description','date') {
-        next    unless($html =~ m!<meta name="$name" content="([^"]+)" />!i);
+        next    unless($html =~ m!<meta name="$name" content="([^"]+)"\s*/>!i);
         $data->{$name} = $1;
     }
 
-    ($data->{isbn13},$data->{isbn10}) = $html =~ m!<dt>(?:Print )?ISBN:</dt><dd[^>]+>([\d-]+)</dd>\s*<dt class="isbn-10"> \| ISBN 10:</dt> <dd>([\d-]+)</dd>!;
-    ($data->{pages}) = $html =~ m!<dt>Pages:</dt> <dd[^>]+>\s*(\d+)\s*</dd>!;
+    my (@isbns) = split(',',$data->{target});
+    for my $isbn (@isbns) {
+        $isbn =~ s/\D+//g;
+        next unless($isbn);
+        $data->{isbn10} = $isbn if(length($isbn) == 10);
+        $data->{isbn13} = $isbn if(length($isbn) == 13);
+    }
+
+    #($data->{isbn13},$data->{isbn10}) = $html =~ m!<dt>(?:Print )?ISBN:</dt><dd[^>]+>([\d-]+)</dd>\s*<dt class="isbn-10"> \| ISBN 10:</dt> <dd>([\d-]+)</dd>!;
+    ($data->{pages}) = $html =~ m!<div class="default">Pages:&nbsp;(\d+)</div>!;
 
     $data->{graphic} ||= $data->{$_}    for('graphic_medium','graphic_large');  # alternative graphic fields
-    $data->{$_} =~ s!\D+!!g             for('isbn13','isbn10');
 
 	unless(defined $data) {
         #print STDERR "\n#url=$book\n";
@@ -184,7 +191,7 @@ RT system (http://rt.cpan.org/Public/Dist/Display.html?Name=WWW-Scraper-ISBN-ORA
 However, it would help greatly if you are able to pinpoint problems or even
 supply a patch.
 
-Fixes are dependant upon their severity and my availablity. Should a fix not
+Fixes are dependent upon their severity and my availability. Should a fix not
 be forthcoming, please feel free to (politely) remind me.
 
 =head1 AUTHOR
@@ -194,7 +201,7 @@ be forthcoming, please feel free to (politely) remind me.
 
 =head1 COPYRIGHT & LICENSE
 
-  Copyright (C) 2004-2010 Barbie for Miss Barbell Productions
+  Copyright (C) 2004-2012 Barbie for Miss Barbell Productions
 
   This module is free software; you can redistribute it and/or
   modify it under the Artistic Licence v2.
