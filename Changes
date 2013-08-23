@@ -1,59 +1,66 @@
 Revision history for Perl extension WWW::Scraper::ISBN::ORA_Driver.
 
-0.11	01/11/2009
-	- alternative method used to extract data from book page.
-	- 10 character ISBN no longer supported, EAN13 now used as the values
-	  for the 'isbn' and 'ean' fields, with both the 'isbn10' and 'isbn13'
-	  fields now obsolete.
-	- specified minimum version of WWW::Mechanize in order to ensure we
-	  use a more recent version of HTML::Form in LWP.
+0.12    30/07/2010
+        - added fields (if known) for binding, pages, weight, width & height.
+        - added ean13, which is the industry name for isbn-13.
+        - more tests.
+        - removal of Template::Extract in favour of plain regexes.
+        - various package file changes (inc adding META.json).
 
-0.10	14/08/2009
-	- minor fixes to parsing of O'Reilly website.
-	- added ping tests, to avoid failing when no network connection.
-	- real failures produce diagnostics not skips now.
-	- added more package tests.
+0.11    01/11/2009
+        - alternative method used to extract data from book page.
+        - 10 character ISBN no longer supported, EAN13 now used as the values
+          for the 'isbn' and 'ean' fields, with both the 'isbn10' and 'isbn13'
+          fields now obsolete.
+        - specified minimum version of WWW::Mechanize in order to ensure we
+          use a more recent version of HTML::Form in LWP.
 
-0.09	27/06/2008
-	- added checks to only run extra tests under AUTOMATED_TESTING
-	- switched metatest to use Test-CPAN-Meta
-	- upped META.ym spec version and link
-	- fixed search and results pages content extraction
-	- added isbn10 and isbn13 as keys for book data
+0.10    14/08/2009
+        - minor fixes to parsing of O'Reilly website.
+        - added ping tests, to avoid failing when no network connection.
+        - real failures produce diagnostics not skips now.
+        - added more package tests.
 
-0.08	01/03/2007
-	- Handwritten META.yml to conform to current specs.
-	- Changed all instances of LICENCE to LICENSE.
-	- Added META.yml test script.
-	- Added LICENSE and Artistic files.
-	- Added an examples directory. Nothing in it yet, except a request
-	  for interesting scripts.
-	- Updated the pattern matching code now that Yahoo have changed their 
-	  page layouts.
-	- Update all reference to company name to O'Reilly Media.
-	- Added better error reporting.
-	- Devel::Cover - 95.4%
+0.09    27/06/2008
+        - added checks to only run extra tests under AUTOMATED_TESTING
+        - switched metatest to use Test-CPAN-Meta
+        - upped META.ym spec version and link
+        - fixed search and results pages content extraction
+        - added isbn10 and isbn13 as keys for book data
 
-0.07	11/10/2006
-	- fixed RT #21851 [thanks to joenio]
-	- fixed RT #20581 [thanks to Peter Scott (PJS)]
-	- Devel::Cover - 95.4%
-	
-0.06	12/09/2005
-	- test failure due to change in to page content
-	
-0.05	07/01/2005  
-	- handler() moved to WWW::Scraper::ISBN::Driver
-	- test suite updated to peform skips if can't access web pages
+0.08    01/03/2007
+        - Handwritten META.yml to conform to current specs.
+        - Changed all instances of LICENCE to LICENSE.
+        - Added META.yml test script.
+        - Added LICENSE and Artistic files.
+        - Added an examples directory. Nothing in it yet, except a request
+          for interesting scripts.
+        - Updated the pattern matching code now that Yahoo have changed their 
+          page layouts.
+        - Update all reference to company name to O'Reilly Media.
+        - Added better error reporting.
+        - Devel::Cover - 95.4%
 
-0.04	31/08/2004
-	- ORA no longer use the safari meta-tag [Alberto Sáez Torres]
+0.07    11/10/2006
+        - fixed RT #21851 [thanks to joenio]
+        - fixed RT #20581 [thanks to Peter Scott (PJS)]
+        - Devel::Cover - 95.4%
+    
+0.06    12/09/2005
+        - test failure due to change in to page content
+    
+0.05    07/01/2005  
+        - handler() moved to WWW::Scraper::ISBN::Driver
+        - test suite updated to peform skips if can't access web pages
 
-0.03	10/05/2004
-	- Added publisher attribute
+0.04    31/08/2004
+        - ORA no longer use the safari meta-tag [Alberto Sáez Torres]
 
-0.02	19/04/2004
-	- Test::More added as a prerequisite for PPMs
+0.03    10/05/2004
+        - Added publisher attribute
 
-0.01	07/04/2004
-	- original version
+0.02    19/04/2004
+        - Test::More added as a prerequisite for PPMs
+    
+0.01    07/04/2004
+        - original version

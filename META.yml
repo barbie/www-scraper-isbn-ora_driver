@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:                   WWW-Scraper-ISBN-ORA_Driver
-version:                0.11
+version:                0.12
 abstract:               Search driver for O'Reilly Media's online catalog
 author:
   - Barbie <barbie@cpan.org>
@@ -10,7 +10,6 @@ distribution_type:      module
 installdirs:            site
 
 requires:
-  Template::Extract:            0
   Test::More:                   0.45
   WWW::Mechanize:               1.60
   WWW::Scraper::ISBN:           0.25
@@ -20,13 +19,14 @@ recommends:
   Test::Pod:                    1.00
   Test::Pod::Coverage:          0.08
   Test::CPAN::Meta:             0.12
+  Test::JSON::Meta:             0.08
 build_requires:
   Test::More:                   0.45
 
 provides:
   WWW::Scraper::ISBN::ORA_Driver:
     file:     lib/WWW/Scraper/ISBN/ORA_Driver.pm
-    version:  0.11
+    version:  0.12
 no_index:
   directory:
     - t

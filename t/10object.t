@@ -2,7 +2,7 @@
 use strict;
 
 use lib './t';
-use Test::More tests => 11;
+use Test::More tests => 19;
 
 ###########################################################
 
@@ -11,7 +11,7 @@ my $scraper = WWW::Scraper::ISBN->new();
 isa_ok($scraper,'WWW::Scraper::ISBN');
 
 SKIP: {
-	skip "Can't see a network connection", 10   if(pingtest());
+	skip "Can't see a network connection", 18   if(pingtest());
 
 	$scraper->drivers("ORA");
 	my $isbn = "9780596001735";
@@ -25,14 +25,22 @@ SKIP: {
 		is($record->found_in,'ORA');
 
 		my $book = $record->book;
-		is($book->{'isbn'},'9780596001735');
-		is($book->{'title'},'Perl Best Practices');
-		is($book->{'author'},'Damian Conway');
-		is($book->{'book_link'},'http://oreilly.com/catalog/9780596001735/');
-		is($book->{'image_link'},'http://covers.oreilly.com/images/9780596001735/sm.gif');
+		is($book->{'isbn'},         $isbn                   ,'.. isbn found');
+		is($book->{'isbn10'},       '0596001738'            ,'.. isbn10 found');    # not provided by default
+		is($book->{'isbn13'},       '9780596001735'         ,'.. isbn13 found');
+		is($book->{'ean13'},        '9780596001735'         ,'.. ean13 found');
+		is($book->{'title'},        'Perl Best Practices'   ,'.. title found');
+		is($book->{'author'},       'Damian Conway'         ,'.. author found');
+		is($book->{'publisher'},    q!O'Reilly Media!       ,'.. publisher found');
+		like($book->{'pubdate'},    qr/Jul. \d{2}, 2005/    ,'.. pubdate found');
 		like($book->{'description'},qr/^Perl Best Practices offers a collection of 256 guidelines/);
-		like($book->{'pubdate'},qr/Jul. \d{2}, 2005/);
-		is($book->{'publisher'},q!O'Reilly Media!);
+		is($book->{'book_link'},    'http://oreilly.com/catalog/9780596001735/');
+		is($book->{'image_link'},   'http://covers.oreilly.com/images/9780596001735/sm.gif');
+		is($book->{'binding'},      undef                   ,'.. binding found');
+		is($book->{'pages'},        544                     ,'.. pages found');
+		is($book->{'width'},        undef                   ,'.. width found');
+		is($book->{'height'},       undef                   ,'.. height found');
+		is($book->{'weight'},       undef                   ,'.. weight found');
 
         #use Data::Dumper;
         #diag("book=[".Dumper($book)."]");
