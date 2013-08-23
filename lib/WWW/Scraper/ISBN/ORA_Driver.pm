@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use vars qw($VERSION @ISA);
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 #--------------------------------------------------------------------------
 
@@ -24,8 +24,9 @@ Searches for book information from the O'Reilly & Associates's online catalog.
 
 ### CHANGES ###############################################################
 #   0.01	07/04/2004	Initial Release
-#	0.02	19/04/2004	Test::More added as a prerequisites for PPMs
-#	0.03	11/05/2004	Add publisher book attribute
+#   0.02	19/04/2004	Test::More added as a prerequisite for PPMs
+#   0.03	10/05/2004	Added publisher attribute
+#   0.04	31/08/2004	ORA no longer use the safari meta-tag
 ###########################################################################
 
 #--------------------------------------------------------------------------
@@ -104,13 +105,9 @@ END
 		   
 	my $extract = Template::Extract->new;
     my $data = $extract->extract($template, $mechanize->content());
-	   
-	unless(defined $data) {
-		print "Error extracting data from ORA result page.\n"	if $self->verbosity;
-		$self->error("Could not extract data from ORA result page.\n");
-		$self->found(0);
-		return 0;
-	}
+
+	return $self->_error_handler("Could not extract data from ORA result page.")
+		unless(defined $data);
 
 	my $book = $data->{book};
 	
@@ -120,7 +117,6 @@ END
 <meta name="reference" content="[% reference %]" />[% ... %]
 <meta name="isbn" content="[% isbn %]" />[% ... %]
 <meta name="graphic" content="[% graphic %]" />[% ... %]
-<meta name="safari" content="[% ... %]" />[% ... %]
 <meta name="book_title" content="[% title %]" />[% ... %]
 <meta name="author" content="[% author %]" />[% ... %]
 <meta name="keywords" content="[% ... %]" />[% ... %]
@@ -131,18 +127,14 @@ END
 	$mechanize->get( $book );
     $data = $extract->extract($template, $mechanize->content());
 
-	unless(defined $data) {
-		print "Error extracting data from ORA result page.\n"	if $self->verbosity;
-		$self->error("Could not extract data from ORA result page.\n");
-		$self->found(0);
-		return 0;
-	}
+	return $self->_error_handler("Could not extract data from ORA result page.")
+		unless(defined $data);
 
 	my $bk = {
 		'isbn'			=> $data->{isbn},
 		'author'		=> $data->{author},
 		'title'			=> $data->{title},
-		'book_link'		=> $book,	# ORA . "/catalog/" . $data->{reference},
+		'book_link'		=> $mechanize->uri(),
 		'image_link'	=> ORA . $data->{graphic},
 		'description'	=> $data->{description},
 		'pubdate'		=> $data->{pubdate},
@@ -151,6 +143,15 @@ END
 	$self->book($bk);
 	$self->found(1);
 	return $self->book;
+}
+
+sub _error_handler {
+	my $self = shift;
+	my $mess = shift;
+	print "Error: $mess\n"	if $self->verbosity;
+	$self->error("$mess\n");
+	$self->found(0);
+	return 0;
 }
 
 1;
