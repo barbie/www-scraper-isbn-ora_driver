@@ -1,5 +1,9 @@
 Revision history for Perl extension WWW::Scraper::ISBN::ORA_Driver.
 
+0.05	07/01/2001  
+	- handler() moved to WWW::Scraper::ISBN::Driver
+	- test suite updated to peform skips if can't access web pages
+
 0.04	31/08/2004
 	- ORA no longer use the safari meta-tag [Alberto Sáez Torres]
 

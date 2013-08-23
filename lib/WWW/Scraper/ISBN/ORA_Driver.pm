@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use vars qw($VERSION @ISA);
-$VERSION = '0.04';
+$VERSION = '0.05';
 
 #--------------------------------------------------------------------------
 
@@ -27,6 +27,7 @@ Searches for book information from the O'Reilly & Associates's online catalog.
 #   0.02	19/04/2004	Test::More added as a prerequisite for PPMs
 #   0.03	10/05/2004	Added publisher attribute
 #   0.04	31/08/2004	ORA no longer use the safari meta-tag
+#   0.05	07/01/2001  handler() moved to WWW::Scraper::ISBN::Driver
 ###########################################################################
 
 #--------------------------------------------------------------------------
@@ -106,7 +107,7 @@ END
 	my $extract = Template::Extract->new;
     my $data = $extract->extract($template, $mechanize->content());
 
-	return $self->_error_handler("Could not extract data from ORA result page.")
+	return $self->handler("Could not extract data from ORA result page.")
 		unless(defined $data);
 
 	my $book = $data->{book};
@@ -145,15 +146,6 @@ END
 	return $self->book;
 }
 
-sub _error_handler {
-	my $self = shift;
-	my $mess = shift;
-	print "Error: $mess\n"	if $self->verbosity;
-	$self->error("$mess\n");
-	$self->found(0);
-	return 0;
-}
-
 1;
 __END__
 
@@ -190,7 +182,7 @@ Requires the following modules be installed:
 
 =head1 COPYRIGHT
 
-  Copyright (C) 2002-2004 Barbie for Miss Barbell Productions
+  Copyright (C) 2004-2005 Barbie for Miss Barbell Productions
   All Rights Reserved.
 
   This module is free software; you can redistribute it and/or 
