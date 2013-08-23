@@ -1,7 +1,13 @@
 Revision history for Perl extension WWW::Scraper::ISBN::ORA_Driver.
 
+0.10	14/08/2009
+	- minor fixes to parsing of O'Reilly website.
+	- added ping tests, to avoid failing when no network connection.
+	- real failures produce diagnostics not skips now.
+	- added more package tests.
+
 0.09	27/06/2008
-	- added checks to only run extra test under AUTOMATED_TESTING
+	- added checks to only run extra tests under AUTOMATED_TESTING
 	- switched metatest to use Test-CPAN-Meta
 	- upped META.ym spec version and link
 	- fixed search and results pages content extraction

@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use vars qw($VERSION @ISA);
-$VERSION = '0.09';
+$VERSION = '0.10';
 
 #--------------------------------------------------------------------------
 
@@ -87,10 +87,11 @@ sub search {
 	$self->book(undef);
 
 	my $url = SEARCH . sprintf(QUERY,$isbn);
-	my $mechanize = WWW::Mechanize->new();
-	$mechanize->get( $url );
+	my $mech = WWW::Mechanize->new();
+    $mech->agent_alias( 'Linux Mozilla' );
+	$mech->get( $url );
     return $self->handler("O'Reilly Media website appears to be unavailable.")
-	    unless($mechanize->success());
+	    unless($mech->success());
 
 	# The Search Results page
 	my $template = <<END;
@@ -100,11 +101,11 @@ sub search {
 END
 
 	my $extract = Template::Extract->new;
-    my $data = $extract->extract($template, $mechanize->content());
+    my $data = $extract->extract($template, $mech->content());
 
 	unless(defined $data) {
         print STDERR "\n#url=$url\n";
-        print STDERR "\n#content=".$mechanize->content();
+        print STDERR "\n#content=".$mech->content();
 	    return $self->handler("Could not extract data from the O'Reilly Media search page.");
     }
 
@@ -124,12 +125,12 @@ END
 <meta name="date" content="[% pubdate %]" />[% ... %]
 END
 
-	$mechanize->get( $book );
-    $data = $extract->extract($template, $mechanize->content());
+	$mech->get( $book );
+    $data = $extract->extract($template, $mech->content());
 
 	unless(defined $data) {
         print STDERR "\n#url=$url\n";
-        print STDERR "\n#content=".$mechanize->content();
+        print STDERR "\n#content=".$mech->content();
 	    return $self->handler("Could not extract data from the O'Reilly Media result page.");
     }
 
@@ -139,8 +140,8 @@ END
 		'isbn13'		=> $data->{isbnx},
 		'author'		=> $data->{author},
 		'title'			=> $data->{title},
-		'book_link'		=> $mechanize->uri(),
-		'image_link'	=> ORA . $data->{graphic},
+		'book_link'		=> $mech->uri(),
+		'image_link'	=> ($data->{graphic} !~ /^http/ ? ORA : '') . $data->{graphic},
 		'description'	=> $data->{description},
 		'pubdate'		=> $data->{pubdate},
 		'publisher'		=> q!O'Reilly Media!,
