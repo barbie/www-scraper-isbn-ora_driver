@@ -1,5 +1,9 @@
 Revision history for Perl extension WWW::Scraper::ISBN::ORA_Driver.
 
+0.13    02/08/2010
+        - added connection protection if client or server offline.
+        - documentation updates.
+
 0.12    30/07/2010
         - added fields (if known) for binding, pages, weight, width & height.
         - added ean13, which is the industry name for isbn-13.
