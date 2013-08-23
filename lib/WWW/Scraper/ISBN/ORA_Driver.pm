@@ -4,13 +4,13 @@ use strict;
 use warnings;
 
 use vars qw($VERSION @ISA);
-$VERSION = '0.07';
+$VERSION = '0.08';
 
 #--------------------------------------------------------------------------
 
 =head1 NAME
 
-WWW::Scraper::ISBN::ORA_Driver - Search driver for O'Reilly & Associates's online catalog.
+WWW::Scraper::ISBN::ORA_Driver - Search driver for O'Reilly Media's online catalog.
 
 =head1 SYNOPSIS
 
@@ -18,7 +18,7 @@ See parent class documentation (L<WWW::Scraper::ISBN::Driver>)
 
 =head1 DESCRIPTION
 
-Searches for book information from the O'Reilly & Associates's online catalog.
+Searches for book information from the O'Reilly Media's online catalog.
 
 =cut
 
@@ -58,7 +58,7 @@ use constant	QUERY	=> '?sp-a=sp1000a5a9&sp-f=ISO-8859-1&sp-t=cat_search&sp-q=%s'
 
 =item C<search()>
 
-Creates a query string, then passes the appropriate form fields to the ORA 
+Creates a query string, then passes the appropriate form fields to the ORM 
 server.
 
 The returned page should be the correct catalog page for that ISBN. If not the
@@ -89,7 +89,8 @@ sub search {
 	my $url = SEARCH . sprintf(QUERY,$isbn);
 	my $mechanize = WWW::Mechanize->new();
 	$mechanize->get( $url );
-	return	unless($mechanize->success());
+    return $self->handler("O'Reilly Media website appears to be unavailable.")
+	    unless($mechanize->success());
 
 	# The Search Results page
 	my $template = <<END;
@@ -99,7 +100,7 @@ END
 	my $extract = Template::Extract->new;
     my $data = $extract->extract($template, $mechanize->content());
 
-	return $self->handler("Could not extract data from ORA result page.")
+	return $self->handler("Could not extract data from the O'Reilly Media result page.")
 		unless(defined $data);
 
 	my $book = $data->{book};
@@ -120,7 +121,7 @@ END
 	$mechanize->get( $book );
     $data = $extract->extract($template, $mechanize->content());
 
-	return $self->handler("Could not extract data from ORA result page.")
+	return $self->handler("Could not extract data from the O'Reilly Media result page.")
 		unless(defined $data);
 
 	my $bk = {
@@ -131,7 +132,7 @@ END
 		'image_link'	=> ORA . $data->{graphic},
 		'description'	=> $data->{description},
 		'pubdate'		=> $data->{pubdate},
-		'publisher'		=> q!O'Reilly & Associates!,
+		'publisher'		=> q!O'Reilly Media!,
 	};
 	$self->book($bk);
 	$self->found(1);
@@ -160,13 +161,16 @@ L<WWW::Scraper::ISBN::Driver>
   Barbie, <barbie@cpan.org>
   Miss Barbell Productions, <http://www.missbarbell.co.uk/>
 
-=head1 COPYRIGHT
+=head1 COPYRIGHT & LICENSE
 
-  Copyright (C) 2004-2005 Barbie for Miss Barbell Productions
+  Copyright (C) 2004-2007 Barbie for Miss Barbell Productions
   All Rights Reserved.
 
   This module is free software; you can redistribute it and/or 
   modify it under the same terms as Perl itself.
 
-=cut
+The full text of the licenses can be found in the F<Artistic> file included 
+with this module, or in L<perlartistic> as part of Perl installation, in 
+the 5.8.1 release or later.
 
+=cut

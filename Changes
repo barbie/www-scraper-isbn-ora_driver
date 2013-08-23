@@ -1,5 +1,18 @@
 Revision history for Perl extension WWW::Scraper::ISBN::ORA_Driver.
 
+0.08	01/03/2007
+	- Handwritten META.yml to conform to current specs.
+	- Changed all instances of LICENCE to LICENSE.
+	- Added META.yml test script.
+	- Added LICENSE and Artistic files.
+	- Added an examples directory. Nothing in it yet, except a request
+	  for interesting scripts.
+	- Updated the pattern matching code now that Yahoo have changed their 
+	  page layouts.
+	- Update all reference to company name to O'Reilly Media.
+	- Added better error reporting.
+	- Devel::Cover - 95.4%
+
 0.07	11/10/2006
 	- fixed RT #21851 [thanks to joenio]
 	- fixed RT #20581 [thanks to Peter Scott (PJS)]

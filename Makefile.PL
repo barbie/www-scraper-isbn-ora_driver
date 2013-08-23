@@ -11,6 +11,8 @@ WriteMakefile(
 		WWW::Mechanize				=> 0,
 		Template::Extract			=> 0,
 	},
+	NO_META			=> 1,
+
     ($] >= 5.005 ?    ## Add these new keywords supported since 5.005
       (ABSTRACT => q|Search driver for O'Reilly & Associates's online catalog|,
        AUTHOR     => 'Barbie <barbie@cpan.org>') : ()),
