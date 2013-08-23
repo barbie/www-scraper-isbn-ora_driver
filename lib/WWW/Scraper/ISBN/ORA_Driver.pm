@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use vars qw($VERSION @ISA);
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 #--------------------------------------------------------------------------
 
@@ -25,6 +25,7 @@ Searches for book information from the O'Reilly & Associates's online catalog.
 ### CHANGES ###############################################################
 #   0.01	07/04/2004	Initial Release
 #	0.02	19/04/2004	Test::More added as a prerequisites for PPMs
+#	0.03	11/05/2004	Add publisher book attribute
 ###########################################################################
 
 #--------------------------------------------------------------------------
@@ -77,6 +78,7 @@ a valid page is returned, the following fields are returned via the book hash:
   image_link
   description
   pubdate
+  publisher
 
 The book_link and image_link refer back to the O'Reilly US website. 
 
@@ -144,6 +146,7 @@ END
 		'image_link'	=> ORA . $data->{graphic},
 		'description'	=> $data->{description},
 		'pubdate'		=> $data->{pubdate},
+		'publisher'		=> q!O'Reilly & Associates!,
 	};
 	$self->book($bk);
 	$self->found(1);
