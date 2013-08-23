@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use vars qw($VERSION @ISA);
-$VERSION = '0.13';
+$VERSION = '0.14';
 
 #--------------------------------------------------------------------------
 
@@ -94,21 +94,21 @@ sub search {
 	my $url = SEARCH . sprintf(QUERY,$isbn);
 	eval { $mech->get( $url ) };
     return $self->handler("O'Reilly Media website appears to be unavailable.")
-	    unless($@ || $mech->success());
+	    if($@ || !$mech->success() || !$mech->content());
 
 	# The Search Results page
     my $content = $mech->content();
     my ($book) = $content =~ m!<div class="book_text">\s*<p class="title">\s*<a href="([^"]+)"!;
 
 	unless(defined $book) {
-        print STDERR "\n#url=$url\n";
-        print STDERR "\n#content=".$mech->content();
+        #print STDERR "\n#url=$url\n";
+        #print STDERR "\n#content=".$mech->content();
 	    return $self->handler("Could not extract data from the O'Reilly Media search page [".($mech->uri())."].");
     }
 
 	eval { $mech->get( $book ) };
     return $self->handler("O'Reilly Media website appears to be unavailable.")
-	    unless($@ || $mech->success());
+	    if($@ || !$mech->success() || !$mech->content());
 
     my $html = $mech->content();
     my $data = {};
@@ -125,10 +125,13 @@ sub search {
     $data->{$_} =~ s!\D+!!g             for('isbn13','isbn10');
 
 	unless(defined $data) {
-        print STDERR "\n#url=$url\n";
-        print STDERR "\n#content=".$mech->content();
+        #print STDERR "\n#url=$book\n";
+        #print STDERR "\n#content=".$mech->content();
 	    return $self->handler("Could not extract data from the O'Reilly Media result page [".($mech->uri())."].");
     }
+
+	# trim top and tail
+	foreach (keys %$data) { next unless(defined $data->{$_});$data->{$_} =~ s/^\s+//;$data->{$_} =~ s/\s+$//; }
 
 	my $bk = {
 		'ean13'		    => $data->{ean},
@@ -154,6 +157,7 @@ sub search {
 }
 
 1;
+
 __END__
 
 =head1 REQUIRES
