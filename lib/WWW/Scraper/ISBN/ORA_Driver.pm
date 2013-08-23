@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use vars qw($VERSION @ISA);
-$VERSION = '0.10';
+$VERSION = '0.11';
 
 #--------------------------------------------------------------------------
 
@@ -106,44 +106,39 @@ END
 	unless(defined $data) {
         print STDERR "\n#url=$url\n";
         print STDERR "\n#content=".$mech->content();
-	    return $self->handler("Could not extract data from the O'Reilly Media search page.");
+	    return $self->handler("Could not extract data from the O'Reilly Media search page [".($mech->uri())."].");
     }
 
 	my $book = $data->{book};
-
-	# The Book page
-	$template = <<END;
-<meta name="book.isbn" content="[% isbnx %]" />[% ... %]
-<meta name="target" content="[% target %]" />[% ... %]
-<meta name="reference" content="[% reference %]" />[% ... %]
-<meta name="isbn" content="[% isbn %]" />[% ... %]
-<meta name="graphic" content="[% graphic %]" />[% ... %]
-<meta name="book_title" content="[% title %]" />[% ... %]
-<meta name="author" content="[% author %]" />[% ... %]
-<meta name="keywords" content="[% ... %]" />[% ... %]
-<meta name="description" content="[% description %]" />[% ... %]
-<meta name="date" content="[% pubdate %]" />[% ... %]
-END
-
 	$mech->get( $book );
-    $data = $extract->extract($template, $mech->content());
+    my $html = $mech->content();
+    $data = undef;
+
+    for my $name ('book.isbn','ean','target','reference','isbn','graphic','graphic_medium','graphic_large','book_title','author','keywords','description','date') {
+        next    unless($html =~ m!<meta name="$name" content="([^"]+)" />!i);
+        $data->{$name} = $1;
+    }
+
+    $data->{graphic} ||= $data->{$_}    for('graphic_medium','graphic_large');  # alternative graphic fields
+    $data->{isbn} ||= $data->{$_}       for('book.isbn','ean');                 # alternative EAN13 fields
+
+    #$data = $extract->extract($template, $mech->content());
 
 	unless(defined $data) {
         print STDERR "\n#url=$url\n";
         print STDERR "\n#content=".$mech->content();
-	    return $self->handler("Could not extract data from the O'Reilly Media result page.");
+	    return $self->handler("Could not extract data from the O'Reilly Media result page [".($mech->uri())."].");
     }
 
 	my $bk = {
 		'isbn'			=> $data->{isbn},
-		'isbn10'		=> $data->{isbn},
-		'isbn13'		=> $data->{isbnx},
+		'ean'		    => $data->{ean},
 		'author'		=> $data->{author},
-		'title'			=> $data->{title},
+		'title'			=> $data->{book_title},
 		'book_link'		=> $mech->uri(),
 		'image_link'	=> ($data->{graphic} !~ /^http/ ? ORA : '') . $data->{graphic},
 		'description'	=> $data->{description},
-		'pubdate'		=> $data->{pubdate},
+		'pubdate'		=> $data->{date},
 		'publisher'		=> q!O'Reilly Media!,
 	};
 	$self->book($bk);

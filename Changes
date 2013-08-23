@@ -1,5 +1,13 @@
 Revision history for Perl extension WWW::Scraper::ISBN::ORA_Driver.
 
+0.11	01/11/2009
+	- alternative method used to extract data from book page.
+	- 10 character ISBN no longer supported, EAN13 now used as the values
+	  for the 'isbn' and 'ean' fields, with both the 'isbn10' and 'isbn13'
+	  fields now obsolete.
+	- specified minimum version of WWW::Mechanize in order to ensure we
+	  use a more recent version of HTML::Form in LWP.
+
 0.10	14/08/2009
 	- minor fixes to parsing of O'Reilly website.
 	- added ping tests, to avoid failing when no network connection.

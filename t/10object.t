@@ -2,7 +2,7 @@
 use strict;
 
 use lib './t';
-use Test::More tests => 12;
+use Test::More tests => 11;
 
 ###########################################################
 
@@ -11,7 +11,7 @@ my $scraper = WWW::Scraper::ISBN->new();
 isa_ok($scraper,'WWW::Scraper::ISBN');
 
 SKIP: {
-	skip "Can't see a network connection", 11   if(pingtest());
+	skip "Can't see a network connection", 10   if(pingtest());
 
 	$scraper->drivers("ORA");
 	my $isbn = "9780596001735";
@@ -25,8 +25,7 @@ SKIP: {
 		is($record->found_in,'ORA');
 
 		my $book = $record->book;
-		is($book->{'isbn'},'0596001738');
-		is($book->{'isbn13'},'9780596001735');
+		is($book->{'isbn'},'9780596001735');
 		is($book->{'title'},'Perl Best Practices');
 		is($book->{'author'},'Damian Conway');
 		is($book->{'book_link'},'http://oreilly.com/catalog/9780596001735/');
