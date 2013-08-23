@@ -1,6 +1,9 @@
 Revision history for Perl extension WWW::Scraper::ISBN::ORA_Driver.
 
-0.05	07/01/2001  
+0.06	12/09/2005
+	- test failure due to change in to page content
+	
+0.05	07/01/2005  
 	- handler() moved to WWW::Scraper::ISBN::Driver
 	- test suite updated to peform skips if can't access web pages
 

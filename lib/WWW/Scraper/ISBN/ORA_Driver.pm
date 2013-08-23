@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use vars qw($VERSION @ISA);
-$VERSION = '0.05';
+$VERSION = '0.06';
 
 #--------------------------------------------------------------------------
 
@@ -21,14 +21,6 @@ See parent class documentation (L<WWW::Scraper::ISBN::Driver>)
 Searches for book information from the O'Reilly & Associates's online catalog.
 
 =cut
-
-### CHANGES ###############################################################
-#   0.01	07/04/2004	Initial Release
-#   0.02	19/04/2004	Test::More added as a prerequisite for PPMs
-#   0.03	10/05/2004	Added publisher attribute
-#   0.04	31/08/2004	ORA no longer use the safari meta-tag
-#   0.05	07/01/2001  handler() moved to WWW::Scraper::ISBN::Driver
-###########################################################################
 
 #--------------------------------------------------------------------------
 
@@ -153,32 +145,20 @@ __END__
 
 Requires the following modules be installed:
 
-=over 4
-
-=item L<WWW::Scraper::ISBN::Driver>
-
-=item L<WWW::Mechanize>
-
-=item L<Template::Extract>
-
-=back
+L<WWW::Scraper::ISBN::Driver>,
+L<WWW::Mechanize>,
+L<Template::Extract>
 
 =head1 SEE ALSO
 
-=over 4
-
-=item L<WWW::Scraper::ISBN>
-
-=item L<WWW::Scraper::ISBN::Record>
-
-=item L<WWW::Scraper::ISBN::Driver>
-
-=back
+L<WWW::Scraper::ISBN>,
+L<WWW::Scraper::ISBN::Record>,
+L<WWW::Scraper::ISBN::Driver>
 
 =head1 AUTHOR
 
-  Barbie, E<lt>barbie@cpan.orgE<gt>
-  Miss Barbell Productions, L<http://www.missbarbell.co.uk/>
+  Barbie, <barbie@cpan.org>
+  Miss Barbell Productions, <http://www.missbarbell.co.uk/>
 
 =head1 COPYRIGHT
 
