@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use vars qw($VERSION @ISA);
-$VERSION = '0.06';
+$VERSION = '0.07';
 
 #--------------------------------------------------------------------------
 
@@ -89,7 +89,7 @@ sub search {
 	my $url = SEARCH . sprintf(QUERY,$isbn);
 	my $mechanize = WWW::Mechanize->new();
 	$mechanize->get( $url );
-	return undef	unless($mechanize->success());
+	return	unless($mechanize->success());
 
 	# The Search Results page
 	my $template = <<END;
@@ -120,7 +120,7 @@ END
 	$mechanize->get( $book );
     $data = $extract->extract($template, $mechanize->content());
 
-	return $self->_error_handler("Could not extract data from ORA result page.")
+	return $self->handler("Could not extract data from ORA result page.")
 		unless(defined $data);
 
 	my $bk = {

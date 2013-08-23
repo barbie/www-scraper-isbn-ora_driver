@@ -25,7 +25,7 @@ use Test::More tests => 11;
 		like($book->{'title'},qr/qmail/);
 		is($book->{'author'},'John Levine');
 		is($book->{'book_link'},'http://www.oreilly.com/catalog/qmail/index.html');
-		is($book->{'image_link'},'http://www.oreilly.com/catalog/covers/qmail_icon.gif');
+		is($book->{'image_link'},'http://www.oreilly.com/catalog/covers/1565926285_sm.gif');
 		is($book->{'description'},'qmail concentrates on common tasks like moving a sendmail setup to qmail, or setting up a POP toaster, a system that provides mail service to a large number of users on other computers sending and retrieving mail remotely. The book fills crucial gaps...');
 		like($book->{'pubdate'},qr/Mar. \d{2}, 2004/);
 		is($book->{'publisher'},q!O'Reilly & Associates!);
