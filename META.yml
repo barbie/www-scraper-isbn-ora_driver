@@ -36,6 +36,7 @@ no_index:
 resources:
   license:    http://www.perlfoundation.org/artistic_license_2_0
   bugtracker: http://rt.cpan.org/Public/Dist/Display.html?Name=WWW-Scraper-ISBN-ORA_Driver
+  repository: http://github.com/barbie/www-scraper-isbn-ora_driver
 
 meta-spec:
    version:   1.4

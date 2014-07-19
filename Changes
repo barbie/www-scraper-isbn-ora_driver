@@ -1,4 +1,7 @@
-Revision history for Perl distribution WWW-Scraper-ISBN-ORA_Driver.
+Revision history for WWW-Scraper-ISBN-ORA_Driver
+================================================
+
+        - added git repository links to metadata.
 
 0.20    2013-03-17
         - added isbn-check.pl to examples.
