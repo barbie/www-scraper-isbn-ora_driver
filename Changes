@@ -2,6 +2,8 @@ Revision history for WWW-Scraper-ISBN-ORA_Driver
 ================================================
 
         - added git repository links to metadata.
+        - fixed distribution name in META.
+        - upgrade to WWW-Scraper-ISBN-1.00.
 
 0.20    2013-03-17
         - added isbn-check.pl to examples.
