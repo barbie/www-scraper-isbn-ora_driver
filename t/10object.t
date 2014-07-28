@@ -35,7 +35,6 @@ my %tests = (
 my $tests = 0;
 for my $isbn (keys %tests) { $tests += scalar( @{ $tests{$isbn} } ) + 2 }
 
-
 ###########################################################
 
 my $scraper = WWW::Scraper::ISBN->new();
