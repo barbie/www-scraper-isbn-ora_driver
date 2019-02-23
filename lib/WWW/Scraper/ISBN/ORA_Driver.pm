@@ -37,8 +37,8 @@ use WWW::Mechanize;
 ###########################################################################
 # Constants
 
-use constant	ORA		=> 'http://www.oreilly.com';
-use constant	SEARCH	=> 'http://search.oreilly.com';
+use constant	ORA		=> 'https://www.oreilly.com';
+use constant	SEARCH	=> 'https://search.oreilly.com';
 use constant	QUERY	=> '?submit.x=17&submit.y=8&q=%s';
 
 #--------------------------------------------------------------------------
@@ -115,22 +115,32 @@ sub search {
     my $data = {};
 
     for my $name ('book.isbn','ean','target','reference','isbn','graphic','graphic_medium','graphic_large','book_title','author','keywords','description','date') {
-        next    unless($html =~ m!<meta name="$name" content="([^"]+)"\s*/>!i);
-        $data->{$name} = $1;
+        if($html =~ m!<meta name="$name" content="([^"]+)"\s*/>!i) {
+            $data->{$name} = $1;
+        } elsif($html =~ m!<meta content="([^"]+)" name="$name"\s*/>!i) {
+            $data->{$name} = $1;
+        }
     }
 
-    my (@isbns) = split(',',$data->{target});
-    for my $isbn (@isbns) {
-        $isbn =~ s/\D+//g;
-        next unless($isbn);
-        $data->{isbn10} = $isbn if(length($isbn) == 10);
-        $data->{isbn13} = $isbn if(length($isbn) == 13);
+    #my (@isbns) = split(',',$data->{target});
+    if($data->{target}) {
+        for my $isbn ( split(',',$data->{target}) ) {
+            $isbn =~ s/\D+//g;
+            next unless($isbn);
+            $data->{isbn10} = $isbn if(length($isbn) == 10);
+            $data->{isbn13} = $isbn if(length($isbn) == 13);
+        }
     }
 
     #($data->{isbn13},$data->{isbn10}) = $html =~ m!<dt>(?:Print )?ISBN:</dt><dd[^>]+>([\d-]+)</dd>\s*<dt class="isbn-10"> \| ISBN 10:</dt> <dd>([\d-]+)</dd>!;
-    ($data->{pages}) = $html =~ m!<div class="default">Pages:&nbsp;(\d+)</div>!;
+    ($data->{pages}) = $html =~ m!<p><strong>Pages:</strong>\s*(\d+)\s*</p>!;
 
-    $data->{graphic} ||= $data->{$_}    for('graphic_medium','graphic_large');  # alternative graphic fields
+    for ('graphic_medium','graphic_large') {  # alternative graphic fields
+        next unless($data->{$_});
+        $data->{graphic} ||= $data->{$_};
+    }
+    $data->{graphic} ||= '';
+        
 
 	unless(defined $data) {
         #print STDERR "\n#url=$book\n";
