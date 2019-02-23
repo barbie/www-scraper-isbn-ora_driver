@@ -37,9 +37,9 @@ use WWW::Mechanize;
 ###########################################################################
 # Constants
 
-use constant	ORA		=> 'https://www.oreilly.com';
-use constant	SEARCH	=> 'https://search.oreilly.com';
-use constant	QUERY	=> '?submit.x=17&submit.y=8&q=%s';
+use constant ORA    => 'https://www.oreilly.com';
+use constant SEARCH => 'https://search.oreilly.com';
+use constant QUERY  => '?submit.x=17&submit.y=8&q=%s';
 
 #--------------------------------------------------------------------------
 
@@ -84,32 +84,32 @@ The book_link and image_link refer back to the O'Reilly US website.
 =cut
 
 sub search {
-	my $self = shift;
-	my $isbn = shift;
-	$self->found(0);
-	$self->book(undef);
+    my $self = shift;
+    my $isbn = shift;
+    $self->found(0);
+    $self->book(undef);
 
-	my $mech = WWW::Mechanize->new();
+    my $mech = WWW::Mechanize->new();
     $mech->agent_alias( 'Linux Mozilla' );
 
-	my $url = SEARCH . sprintf(QUERY,$isbn);
-	eval { $mech->get( $url ) };
+    my $url = SEARCH . sprintf(QUERY,$isbn);
+    eval { $mech->get( $url ) };
     return $self->handler("O'Reilly Media website appears to be unavailable.")
-	    if($@ || !$mech->success() || !$mech->content());
+        if($@ || !$mech->success() || !$mech->content());
 
-	# The Search Results page
+    # The Search Results page
     my $content = $mech->content();
     my ($book) = $content =~ m!<div class="book_text">\s*<p class="title">\s*<a href="([^"]+)"!;
 
-	unless(defined $book) {
+    unless(defined $book) {
         #print STDERR "\n#url=$url\n";
         #print STDERR "\n#content=".$mech->content();
-	    return $self->handler("Could not extract data from the O'Reilly Media search page [".($mech->uri())."].");
+        return $self->handler("Could not extract data from the O'Reilly Media search page [".($mech->uri())."].");
     }
 
-	eval { $mech->get( $book ) };
+    eval { $mech->get( $book ) };
     return $self->handler("O'Reilly Media website appears to be unavailable.")
-	    if($@ || !$mech->success() || !$mech->content());
+        if($@ || !$mech->success() || !$mech->content());
 
     my $html = $mech->content();
     my $data = {};
@@ -142,37 +142,37 @@ sub search {
     $data->{graphic} ||= '';
         
 
-	unless(defined $data) {
+    unless(defined $data) {
         #print STDERR "\n#url=$book\n";
         #print STDERR "\n#content=".$mech->content();
-	    return $self->handler("Could not extract data from the O'Reilly Media result page [".($mech->uri())."].");
+        return $self->handler("Could not extract data from the O'Reilly Media result page [".($mech->uri())."].");
     }
 
-	# trim top and tail
-	foreach (keys %$data) { next unless(defined $data->{$_});$data->{$_} =~ s/^\s+//;$data->{$_} =~ s/\s+$//; }
+    # trim top and tail
+    foreach (keys %$data) { next unless(defined $data->{$_});$data->{$_} =~ s/^\s+//;$data->{$_} =~ s/\s+$//; }
 
-	my $bk = {
-		'ean13'		    => $data->{ean},
-		'isbn13'		=> $data->{ean},
-		'isbn10'		=> $data->{isbn10},
-		'isbn'			=> $data->{ean},
-		'author'		=> $data->{author},
-		'title'			=> $data->{book_title},
-		'book_link'		=> $mech->uri(),
-		'image_link'	=> ($data->{graphic} !~ /^http/ ? ORA : '') . $data->{graphic},
-		'thumb_link'	=> ($data->{graphic} !~ /^http/ ? ORA : '') . $data->{graphic},
-		'description'	=> $data->{description},
-		'pubdate'		=> $data->{date},
-		'publisher'		=> q!O'Reilly Media!,
-		'binding'	    => $data->{binding},
-		'pages'		    => $data->{pages},
-		'weight'		=> $data->{weight},
-		'width'		    => $data->{width},
-		'height'		=> $data->{height}
-	};
-	$self->book($bk);
-	$self->found(1);
-	return $self->book;
+    my $bk = {
+        'ean13'       => $data->{ean},
+        'isbn13'      => $data->{ean},
+        'isbn10'      => $data->{isbn10},
+        'isbn'        => $data->{ean},
+        'author'      => $data->{author},
+        'title'       => $data->{book_title},
+        'book_link'   => $mech->uri(),
+        'image_link'  => ($data->{graphic} !~ /^http/ ? ORA : '') . $data->{graphic},
+        'thumb_link'  => ($data->{graphic} !~ /^http/ ? ORA : '') . $data->{graphic},
+        'description' => $data->{description},
+        'pubdate'     => $data->{date},
+        'publisher'   => q!O'Reilly Media!,
+        'binding'     => $data->{binding},
+        'pages'       => $data->{pages},
+        'weight'      => $data->{weight},
+        'width'       => $data->{width},
+        'height'      => $data->{height}
+    };
+    $self->book($bk);
+    $self->found(1);
+    return $self->book;
 }
 
 1;

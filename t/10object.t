@@ -41,9 +41,9 @@ my $scraper = WWW::Scraper::ISBN->new();
 isa_ok($scraper,'WWW::Scraper::ISBN');
 
 SKIP: {
-	skip "Can't see a network connection", $tests   if(pingtest($CHECK_DOMAIN));
+    skip "Can't see a network connection", $tests   if(pingtest($CHECK_DOMAIN));
 
-	$scraper->drivers($DRIVER);
+    $scraper->drivers($DRIVER);
 
     my $record;
     for my $isbn (keys %tests) {
